@@ -1,0 +1,81 @@
+import pygame, sys
+import pygame.font
+import math
+import game_functions as gf
+pygame.init()
+
+win = pygame.display.set_mode ((800, 600))
+
+pygame.display.set_caption("Os Monstros fofos!")
+
+def check_events(hero, bullet, game_settings, screen, play_button):
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			sys.exit()
+		
+		elif event.type == pygame.MOUSEBUTTONDOWN:
+			mouse_x, mouse_y = pygame.mouse.get_pos()
+			
+			if play_button.rect.collidepoint(mouse_x, mouse_y):
+				game_settings.game_active = True
+
+		elif event.type == pygame.KEYDOWN:
+			if event.key == pygame.K_RIGHT:	
+				hero.moving_right = True
+
+			elif event.key == pygame.K_LEFT:
+				hero.moving_left = True
+
+			elif event.key == pygame.K_SPACE:
+				new_bullet = Bullet(hero, game_settings, screen)
+				bullet.add(new_bullet)	
+
+			elif event.key == pygame.K_UP: 	
+				hero.moving_up = True 
+
+			elif event.key == pygame.K_DOWN: 	
+				hero.moving_down = True 
+
+		elif event.type == pygame.KEYUP:
+			if event.key == pygame.K_RIGHT:
+				hero.moving_right = False
+
+			elif event.key == pygame.K_LEFT: 
+				hero.moving_left = False
+
+			elif event.key == pygame.K_UP: 
+				hero.moving_up = False
+
+			elif event.key == pygame.K_DOWN: 
+				hero.moving_down = False				
+
+while 1:
+ gf.check_events(hero, bullets, game_settings, screen, play_button)
+ gf.update_screen(game_settings, screen, hero, bullets, enemies, play_button, scoreboard)
+ if game_settings.game_active:
+    hero.update()
+    enemies.update(hero, game_settings.enemy_speed)
+    tick += 1
+ if tick % 50 == 0:
+    enemies.add(Enemy(screen, game_settings))
+    bullets.update() 
+				
+ for enemy in enemies:
+  for bullet in bullets:
+      if bullet.rect.bottom <= 0:
+         bullet.remove(bullet)
+      if len(bullets) >= 10:
+         bullets.remove(bullet)
+      if enemy.rect.colliderect(bullet.rect):
+         count += 1
+         count_update = "Monstros Mortos: %d" %count
+         scoreboard = Scoreboard(screen, count_update)
+                                                            
+         enemies.remove(enemy)
+         bullets.remove(bullet)
+         pygame.mixer.music.load('sounds/win.wav')
+         pygame.mixer.music.play(0)
+      if enemy.rect.colliderect(heroi.rect):
+         print ("O Monstro deu-te uma coça!")
+         pygame.mixer.music.load('sounds/lose.wav')
+         pygame.mixer.music.play(0)

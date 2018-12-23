@@ -1,0 +1,8 @@
+pygame.mixer.init()
+win_sound = pygame.mixer.Sound('Música/ganhar.wav')
+lose_sound = pygame.mixer.Sound('Música/perder.wav')
+lose_sound.play()
+while True:
+    pass
+
+pygame.mixer.quit()
